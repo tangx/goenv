@@ -1,5 +1,71 @@
-# envutils
-go env utils
+# goenv
+
+1. 使用 `envutils.Configure(config any)` 生成默认配置到 `default.yml`。 
+    + 如果 config 中的字段具有方法 `SetDefaults() , 则会被调用， 并且值会被写到 default.yml 中。
+2. 同时读取并解析 `default.yml, config.yml` 到 config 结构体中。
+    + 如果 config 中的字段具有方法 `Initialize()`, 则会被调用。 并进行初始化。
+
+## Quick Start
+
+1. 定义一个 golang 
+
+```go
+package envutils
+
+import (
+	"context"
+
+	"github.com/redis/go-redis/v9"
+)
+
+type RedisClient struct {
+	Endpoint string `env:"endpoint"`
+	client   *redis.Client
+}
+
+// 设置默认值并展示
+func (r *RedisClient) SetDefaults() {
+	if r.Endpoint == "" {
+		r.Endpoint = "redis://:Password@localhost:6379/0"
+	}
+}
+func (r *RedisClient) Initialize() {
+	r.connect()
+}
+
+func (r *RedisClient) connect() {
+	if r.client != nil {
+		return
+	}
+
+	opts, err := redis.ParseURL(r.Endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	r.client = redis.NewClient(opts)
+	_ = r.client.Conn().Ping(context.Background())
+}
+```
+
+## 2. **生成变量模版**, **初始化变量结构体**
+
+```go
+var (
+    Redis = &RedisClient{}
+)
+
+func init(){
+    config:=&struct{
+        Redis: *RedisClient
+    }{
+        Redis: *Redis
+    }
+
+    Configure(config)
+}
+```
+
 
 
 ## Usage

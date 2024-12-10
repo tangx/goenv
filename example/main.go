@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/tangx/envutils"
+	goenv "github.com/tangx/goenv"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func read() {
 		Server: server,
 	}
 
-	err := envutils.UnmarshalFile(config, appname, cfgfile)
+	err := goenv.UnmarshalFile(config, appname, cfgfile)
 	if err != nil {
 		panic(err)
 	}
@@ -53,12 +53,12 @@ func dump() {
 		Server: server,
 	}
 
-	err := envutils.CallSetDefaults(config)
+	err := goenv.CallSetDefaults(config)
 	if err != nil {
 		panic(err)
 	}
 
-	b, err := envutils.Marshal(config, appname)
+	b, err := goenv.Marshal(config, appname)
 	if err != nil {
 		panic(err)
 	}

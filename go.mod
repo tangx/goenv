@@ -1,4 +1,4 @@
-module github.com/tangx/envutils
+module github.com/tangx/goenv
 
 go 1.16
 
