@@ -1,4 +1,4 @@
-package envutils
+package goenv
 
 import "testing"
 
