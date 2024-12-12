@@ -71,3 +71,11 @@ func Configure(prefix string, config interface{}) error {
 
 	return nil
 }
+
+type Initializer interface {
+	Initialize()
+}
+
+type ISetDefaults interface {
+	SetDefaults()
+}
