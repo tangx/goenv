@@ -62,11 +62,11 @@ func dump() {
 	if err != nil {
 		panic(err)
 	}
-	_ = os.WriteFile(cfgfile, b, os.ModePerm)
+	_ = os.WriteFile("default.yml", b, os.ModePerm)
 }
 
 type Server struct {
-	Address string `env:"address"`
+	Address string `env:"address,expandenv"`
 	Port    int    `env:"port"`
 }
 

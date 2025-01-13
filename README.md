@@ -5,9 +5,29 @@
 2. 同时读取并解析 `default.yml, config.yml` 到 config 结构体中。
     + 如果 config 中的字段具有方法 `Initialize()`, 则会被调用。 并进行初始化。
 
+
+### Tag and Flags
+
+```go
+// Test 3
+type Server struct {
+	ListenAddr string `env:"-"`   // skip to mapping
+	Auth       string `env:""`  // use field name(Auth) as the key
+	DBName     string `env:"dbName"` // use customize name(dbName) as the key
+	Timemout   string `env:"timemout,!expandenv"` // skip expand $var or ${var} from os env values
+}
+```
+
++ `!expandenv`: skip expanding env-vars. By default, all the fields are expanded from Environment-Vars whtn its values is `$var` or `${var}`.
+
+```yaml
+AppName__Server_address: ${HOST} # export HOST=192.168.200.200
+AppName__Server_port: 80 
+```
+
 ## Quick Start
 
-1. 定义一个 golang 
+1. 定义一个 Redis 
 
 ```go
 package envutils

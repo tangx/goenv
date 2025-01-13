@@ -54,14 +54,24 @@ func unmarshal(rv reflect.Value, prefix string, m map[string]string) (err error)
 
 		ft := rt.Field(i)
 
+		// env:"-" skip
+		// env:"name"
+		// env:"name,!expandenv"
 		name, ok := ft.Tag.Lookup("env")
-		// if !ok || name == "-" {
-		// 	continue
-		// }
+
 		// 如果 env 的值为 - ， 则略过
 		if name == "-" {
 			continue
 		}
+
+		flags := []string{}
+		parts := strings.Split(name, ",")
+		name = parts[0]
+
+		if len(parts) > 1 {
+			flags = parts[1:]
+		}
+
 		// 如果 name 为空， 则略过
 		if len(name) == 0 {
 			name = ft.Name
@@ -89,7 +99,12 @@ func unmarshal(rv reflect.Value, prefix string, m map[string]string) (err error)
 			continue
 		}
 
-		// fmt.Printf("key(%s) = value(%s)\n", key, val)
+		// ExpandEnv from ${var} or $var to the value of var
+		// ${DB_URL} => mysql://root:123456@localhost:3306/test
+		// expand by default
+		if isExpandEnv(flags) {
+			val = os.ExpandEnv(val)
+		}
 
 		switch fv.Kind() {
 		case reflect.String:
@@ -124,4 +139,14 @@ func unmarshal(rv reflect.Value, prefix string, m map[string]string) (err error)
 	}
 
 	return
+}
+
+func isExpandEnv(flags []string) bool {
+	for _, flag := range flags {
+		if flag == "!expandenv" {
+			return false
+		}
+	}
+
+	return true
 }

@@ -11,8 +11,7 @@ func marshal(rv reflect.Value, m map[string]interface{}, prefix string) error {
 
 	// 判断是否为所需目标
 	if rv.Kind() != reflect.Struct {
-		msg := fmt.Sprintf("want a struct , got a %#v", rv.Kind())
-		return fmt.Errorf(msg)
+		return fmt.Errorf("want a struct , got a %#v", rv.Kind())
 	}
 
 	// 获取实际 struct 对象

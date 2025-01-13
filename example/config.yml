@@ -1,2 +1,2 @@
-AppName__Server_address: 192.168.100.100
-AppName__Server_port: 80
+AppName__Server_address: ${HOST} # export HOST=192.168.200.200
+AppName__Server_port: 80 
